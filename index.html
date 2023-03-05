@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OFALib</title>
+        <link rel="stylesheet"
+      href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/atom-one-dark.min.css">
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+    @import url('https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css');
+    @import url('/modal.css');
+    .grid-container {
+      padding: 5px;
+      display: grid;
+      width: 100vw;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      grid-gap: 10px;
+      align-items: start; /* add this line to stretch boxes vertically */
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #333;
+      color: white;
+      font-family: 'Roboto';
+    }
+    .grid-item {
+      width: auto;
+      height: auto;
+      background-color: #444;
+      padding: 5px;
+      border: 5px solid black;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+    .grid-item i {
+      margin-top: 10px;
+    }
+    nav {
+      margin: 0px;
+      padding-top: 30px;
+      padding-left: 30px;
+      height: 100px;
+      width: calc(100vw-30px);
+      background-color: #1a1a1a;
+    }
+    nav b {
+      font-size: 25px;
+    }
+    select {
+      border-radius: 10px; /* round the edges */
+      padding: 8px; /* add padding per element */
+      background-color: #333;
+      color: white;
+    }
+    input {
+      border-radius: 10px; /* round the edges */
+      padding: 8px; /* add padding per element */
+      background-color: #333;
+      color: white;
+      border: 1px solid white;
+    }
+    .popup {
+      position: absolute;
+      z-index: 9999;
+    }
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100vw;
+      height: 5vh;
+      background-color: #555;
+      text-align: center;
+    }
+    a:visited {
+      color: lightcoral;
+    }
+    a:link {
+      color: coral;
+    }
+  </style>
+</head>
+<body>
+  <nav><b><i class="fa-solid fa-book-open-cover"></i> Fico Library (OFALib)</b><center>
+  <select class=select>
+    <option value="None">Select one...</option>
+    <option value="Solid">Solid</option>
+    <option value="Brands">Brands</option>
+    <option value="Duotone Solids">Duotone Solids</option>
+    <option value="Light Solids">Light Solids</option>
+    <option value="Regular Solids">Regular Solids</option>
+    <option value="Thin Solids">Thin Solids</option>
+</select><input id='search' placeholder='Search'>
+  <select class=sharp>
+    <option value="No">Smooth</option>
+    <option value="Sharp">Sharp</option>
+  </select></center></nav>
+  <span class='content'>
+    <div class='grid-container'>
+    <center class='none'>
+      <h2>No style selected</h2>
+    </center>
+  </div>
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close"><i class='fa-solid fa-circle-x'></i></span>
+      <h2 id='mname'>Empty</h2>
+      <b id='mid'>empty</b>
+      <pre><code id='mcss'>&lt;i class="fa-empty fa-empty"&gt;&lt;/i&gt;</code></pre>
+    </div>
+  </div>
+  </span>
+  <footer>
+    <a>Website created by <a href='https://gavingogaming.com'>GavinGoGaming</a></a>
+  </footer>
+  <script>
+var translations = {
+  'Brands': 'brands',
+  'Duotone Solids': 'duotone',
+  'Light Solids': 'light',
+  'Regular Solids': 'regular',
+  'Solid': 'solid',
+  'Thin Solids': 'thin'
+};
+    function folder() {
+      return (document.querySelector('.sharp').value == 'Sharp') ?
+        'sharp fa-'+translations[document.querySelector('.select').value]
+        : translations[document.querySelector('.select').value];
+    }
+            var modal = document.getElementById("myModal");
+            var span = document.getElementsByClassName("close")[0];
+    var mname = document.querySelector('#mname');
+    var mid = document.querySelector('#mid');
+    var mcss = document.querySelector('#mcss');
+            span.onclick = function() {
+              modal.style.display = "none";
+            }
+            window.onclick = function(event) {
+              if (event.target == modal) {
+                modal.style.display = "none";
+              }
+            }
+    function update() {
+  document.querySelector('.grid-container').innerHTML = '';
+  fetch('https://keho.nl/mb/codepenfiles/fontawesome/v6/v6_icons.json')
+    .then(res => res.json())
+    .then(arry => {
+      for (var itm of arry.data.allIcons.icons) {
+        if (itm.styles.includes(folder())) {
+          if (document.getElementById('search').value === '' ||
+              itm.label.toLowerCase().includes(document.getElementById('search').value.toLowerCase())) {
+            var elem = document.createElement('div');
+            elem.classList.add('grid-item');
+            elem.innerHTML = `<center><b>${itm.label}</b><br><i class='fa-${folder()} fa-${itm.id} fa-4x'></i></center>`;
+            var il = "" + itm.label + "";
+            elem.onclick = function (item) {
+              return function () {
+                setIconDetails(item);
+                modal.style.display = 'block';
+              };
+            }(itm);
+            document.querySelector('.grid-container').appendChild(elem);
+          }
+        }
+      }
+      if (document.querySelector('.grid-container').innerHTML === '') {
+        document.querySelector('.none').style.display = 'block';
+      } else {
+        document.querySelector('.none').style.display = 'none';
+      }
+    });
+}
+
+
+function setIconDetails(item) {
+  mname.innerHTML = 'Icon: ' + item.label + `<i style='margin-left: 10px;' class="fa-${folder()} fa-${item.id} fa-2x"></i>`;
+  mid.textContent = 'ID: ' + item.id;
+  mcss.textContent = `<i class="fa-${folder()} fa-${item.id}"></i>`;
+  hljs.highlightElement(mcss);
+}
+
+    document.querySelector('.select').addEventListener('change', ()=>{
+      if(document.querySelector('.select').value == 'None') {
+        document.querySelector('.grid-container').innerHTML = `
+    <center class='none'>
+      <h2>No style selected</h2>
+    </center>`;
+      }
+      update();
+    });
+    document.querySelector('#search').addEventListener('input', (e)=>{
+      update();
+    });
+  </script>
+</body>
+</html>
