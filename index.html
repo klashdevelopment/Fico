@@ -15,7 +15,7 @@
     .grid-container {
       padding: 5px;
       display: grid;
-      width: 100vw;
+      width: calc(100vw-15px);
       grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
       grid-gap: 10px;
       align-items: start; /* add this line to stretch boxes vertically */
@@ -96,7 +96,7 @@
 </select><input id='search' placeholder='Search'>
   <select class=sharp>
     <option value="No">Smooth</option>
-    <option value="Sharp">Sharp</option>
+    <option value="No2">Sharp - Coming Soon</option>
   </select></center></nav>
   <span class='content'>
     <div class='grid-container'>
@@ -108,8 +108,13 @@
     <div class="modal-content">
       <span class="close"><i class='fa-solid fa-circle-x'></i></span>
       <h2 id='mname'>Empty</h2>
-      <b id='mid'>empty</b>
-      <pre><code id='mcss'>&lt;i class="fa-empty fa-empty"&gt;&lt;/i&gt;</code></pre>
+      <b id='mid'>empty</b><br>
+      HTML:
+      <pre><code id='mhtml'>&lt;i class="fa-empty fa-empty"&gt;&lt;/i&gt;</code></pre>
+      React:
+      <pre><code id='mreact'>&lt;i class="fa-empty fa-empty"&gt;&lt;/i&gt;</code></pre>
+      Vue:
+      <pre><code id='mvue'>&lt;i class="fa-empty fa-empty"&gt;&lt;/i&gt;</code></pre>
     </div>
   </div>
   </span>
@@ -134,7 +139,9 @@ var translations = {
             var span = document.getElementsByClassName("close")[0];
     var mname = document.querySelector('#mname');
     var mid = document.querySelector('#mid');
-    var mcss = document.querySelector('#mcss');
+    var mreact = document.querySelector('#mreact');
+    var mvue = document.querySelector('#mvue');
+    var mhtml = document.querySelector('#mhtml');
             span.onclick = function() {
               modal.style.display = "none";
             }
@@ -149,7 +156,8 @@ var translations = {
     .then(res => res.json())
     .then(arry => {
       for (var itm of arry.data.allIcons.icons) {
-        if (itm.styles.includes(folder())) {
+        console.log(itm);
+        if (folder().startsWith('sharp') ? (itm.styles.includes(folder().substring(9)) && itm.styles.includes('sharp')) : itm.styles.includes(folder())) {
           if (document.getElementById('search').value === '' ||
               itm.label.toLowerCase().includes(document.getElementById('search').value.toLowerCase())) {
             var elem = document.createElement('div');
@@ -166,11 +174,6 @@ var translations = {
           }
         }
       }
-      if (document.querySelector('.grid-container').innerHTML === '') {
-        document.querySelector('.none').style.display = 'block';
-      } else {
-        document.querySelector('.none').style.display = 'none';
-      }
     });
 }
 
@@ -178,8 +181,10 @@ var translations = {
 function setIconDetails(item) {
   mname.innerHTML = 'Icon: ' + item.label + `<i style='margin-left: 10px;' class="fa-${folder()} fa-${item.id} fa-2x"></i>`;
   mid.textContent = 'ID: ' + item.id;
-  mcss.textContent = `<i class="fa-${folder()} fa-${item.id}"></i>`;
-  hljs.highlightElement(mcss);
+  mhtml.textContent = `<i class="fa-${folder()} fa-${item.id}"></i>`;
+  mreact.textContent= `<FontAwesomeIcon icon="fa-${folder()} fa-${item.id}" />`;
+  mvue.textContent = `<font-awesome-icon icon="fa-${folder()} fa-${item.id}" />`;
+  hljs.highlightAll();
 }
 
     document.querySelector('.select').addEventListener('change', ()=>{
