@@ -204,7 +204,7 @@
         document.querySelector('.grid-container').innerHTML = '';
         for (var itm of arry.data.allIcons.icons) {
             console.log(itm);
-            if (fitm.styles.includes(folder())) {
+            if (itm.styles.includes(folder())) {
                 if (document.getElementById('search').value === '' ||
                     itm.label.toLowerCase().includes(document.getElementById('search').value.toLowerCase())) {
                     var elem = document.createElement('div');
