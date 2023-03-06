@@ -61,7 +61,20 @@
       padding: 8px; /* add padding per element */
       background-color: #333;
       color: white;
-      border: 1px solid white;
+      border: 1px solid #767676;
+      margin-left: 4px;
+    }
+    button {
+      cursor: pointer;
+      border-radius: 10px; /* round the edges */
+      padding: 8px; /* add padding per element */
+      background-color: #333;
+      color: white;
+      border: 1px solid #767676;
+      transition: font-size 0.25s ease;
+    }
+    button:hover {
+      font-size: 14px;
     }
     .popup {
       position: absolute;
@@ -94,21 +107,39 @@
     <option value="Regular Solids">Regular Solids</option>
     <option value="Thin Solids">Thin Solids</option>
 </select><input id='search' placeholder='Search'>
-  <select class=sharp>
+  <!--select class=sharp>
     <option value="No">Smooth</option>
     <option value="No2">Sharp - Coming Soon</option>
-  </select></center></nav>
+  </select-->
+<button id="install">FontAwesome Pro Download</button>
+</center></nav>
   <span class='content'>
     <div class='grid-container'>
     <center class='none'>
       <h2>No style selected</h2>
     </center>
   </div>
-  <div id="myModal" class="modal">
+  <div class="modal installbox">
+    <div class="modal-content">
+      <span class="close"><i class='fa-solid fa-circle-x'></i></span>
+      <h2>Installing FontAwesome Pro</h2>
+      FontAwesome Direct Mirror (CSS - Webfonts):
+      <pre><code>@import url('https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css');</code></pre>
+      <pre><code>&lt;link href="https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css" rel="stylesheet"/&gt;</code></pre>
+      FontAwesome Direct Mirror (JS - SVGs):
+      <pre><code>&lt;script src="https://site-assets.fontawesome.com/releases/v6.3.0/js/all.js"&gt;&lt;/script&gt;</code></pre>
+      Alternative URLs (same content):
+      <pre><code>"https://gtml.gavingogamingrepl.repl.co/fontawesome/css/all.css" // CSS Webfonts - GTML Mirror
+"https://gtml.gavingogamingrepl.repl.co/fontawesome/js/all.js" // JS SVGs - GTML Mirror</code></pre>
+      <script>hljs.highlightAll();</script>
+    </div>
+  </div>
+  <div class="modal m2">
     <div class="modal-content">
       <span class="close"><i class='fa-solid fa-circle-x'></i></span>
       <h2 id='mname'>Empty</h2>
       <b id='mid'>empty</b><br>
+      <h3>Use in code</h3>
       HTML:
       <pre><code id='mhtml'>&lt;i class="fa-empty fa-empty"&gt;&lt;/i&gt;</code></pre>
       React:
@@ -122,82 +153,100 @@
     <a>Website created by <a href='https://gavingogaming.com'>GavinGoGaming</a></a>
   </footer>
   <script>
-var translations = {
-  'Brands': 'brands',
-  'Duotone Solids': 'duotone',
-  'Light Solids': 'light',
-  'Regular Solids': 'regular',
-  'Solid': 'solid',
-  'Thin Solids': 'thin'
-};
-    function folder() {
-      return (document.querySelector('.sharp').value == 'Sharp') ?
-        'sharp fa-'+translations[document.querySelector('.select').value]
-        : translations[document.querySelector('.select').value];
+    var arry;
+    async function initArry() {
+        await fetch('https://keho.nl/mb/codepenfiles/fontawesome/v6/v6_icons.json')
+            .then(res => res.json())
+            .then(array => arry = array);
     }
-            var modal = document.getElementById("myModal");
-            var span = document.getElementsByClassName("close")[0];
+    initArry();
+    var translations = {
+        'Brands': 'brands',
+        'Duotone Solids': 'duotone',
+        'Light Solids': 'light',
+        'Regular Solids': 'regular',
+        'Solid': 'solid',
+        'Thin Solids': 'thin'
+    };
+
+    function folder() {
+        // return (document.querySelector('.sharp').value == 'Sharp') ?
+        // 'sharp fa-'+translations[document.querySelector('.select').value]
+        /*:*/
+        return translations[document.querySelector('.select').value];
+    }
+    var modals = document.querySelectorAll(".modal");
+    var modal = document.querySelector('.m2');
+    var ibm = document.querySelector('.installbox');
+    var span = document.querySelectorAll(".close");
+    span.forEach(elem => {
+        elem.onclick = function() {
+            for (var mdl of modals) {
+                mdl.style.display = "none";
+            }
+        }
+    });
     var mname = document.querySelector('#mname');
     var mid = document.querySelector('#mid');
     var mreact = document.querySelector('#mreact');
     var mvue = document.querySelector('#mvue');
     var mhtml = document.querySelector('#mhtml');
-            span.onclick = function() {
-              modal.style.display = "none";
+
+    window.onclick = function(event) {
+        if (modals.forEach(e => event.target == e)) {
+            for (var mdl of modals) {
+                mdl.style.display = "none";
             }
-            window.onclick = function(event) {
-              if (event.target == modal) {
-                modal.style.display = "none";
-              }
-            }
-    function update() {
-  document.querySelector('.grid-container').innerHTML = '';
-  fetch('https://keho.nl/mb/codepenfiles/fontawesome/v6/v6_icons.json')
-    .then(res => res.json())
-    .then(arry => {
-      for (var itm of arry.data.allIcons.icons) {
-        console.log(itm);
-        if (folder().startsWith('sharp') ? (itm.styles.includes(folder().substring(9)) && itm.styles.includes('sharp')) : itm.styles.includes(folder())) {
-          if (document.getElementById('search').value === '' ||
-              itm.label.toLowerCase().includes(document.getElementById('search').value.toLowerCase())) {
-            var elem = document.createElement('div');
-            elem.classList.add('grid-item');
-            elem.innerHTML = `<center><b>${itm.label}</b><br><i class='fa-${folder()} fa-${itm.id} fa-4x'></i></center>`;
-            var il = "" + itm.label + "";
-            elem.onclick = function (item) {
-              return function () {
-                setIconDetails(item);
-                modal.style.display = 'block';
-              };
-            }(itm);
-            document.querySelector('.grid-container').appendChild(elem);
-          }
         }
-      }
+    }
+
+    function update() {
+        document.querySelector('.grid-container').innerHTML = '';
+        for (var itm of arry.data.allIcons.icons) {
+            console.log(itm);
+            if (fitm.styles.includes(folder())) {
+                if (document.getElementById('search').value === '' ||
+                    itm.label.toLowerCase().includes(document.getElementById('search').value.toLowerCase())) {
+                    var elem = document.createElement('div');
+                    elem.classList.add('grid-item');
+                    elem.innerHTML = `<center><b>${itm.label}</b><br><i class='fa-${folder()} fa-${itm.id} fa-4x'></i></center>`;
+                    var il = "" + itm.label + "";
+                    elem.onclick = function(item) {
+                        return function() {
+                            setIconDetails(item);
+                            modal.style.display = 'block';
+                        };
+                    }(itm);
+                    document.querySelector('.grid-container').appendChild(elem);
+                }
+            }
+        }
+    }
+
+
+    function setIconDetails(item) {
+        mname.innerHTML = 'Icon: ' + item.label + `<i style='margin-left: 10px;' class="fa-${folder()} fa-${item.id} fa-2x"></i>`;
+        mid.textContent = 'ID: ' + item.id;
+        mhtml.textContent = `<i class="fa-${folder()} fa-${item.id}"></i>`;
+        mreact.textContent = `<FontAwesomeIcon icon="fa-${folder()} fa-${item.id}" />`;
+        mvue.textContent = `<font-awesome-icon icon="fa-${folder()} fa-${item.id}" />`;
+        hljs.highlightAll();
+    }
+
+    document.querySelector('.select').addEventListener('change', () => {
+        if (document.querySelector('.select').value == 'None') {
+            document.querySelector('.grid-container').innerHTML = `
+        <center class='none'>
+          <h2>No style selected</h2>
+        </center>`;
+        }
+        update();
     });
-}
-
-
-function setIconDetails(item) {
-  mname.innerHTML = 'Icon: ' + item.label + `<i style='margin-left: 10px;' class="fa-${folder()} fa-${item.id} fa-2x"></i>`;
-  mid.textContent = 'ID: ' + item.id;
-  mhtml.textContent = `<i class="fa-${folder()} fa-${item.id}"></i>`;
-  mreact.textContent= `<FontAwesomeIcon icon="fa-${folder()} fa-${item.id}" />`;
-  mvue.textContent = `<font-awesome-icon icon="fa-${folder()} fa-${item.id}" />`;
-  hljs.highlightAll();
-}
-
-    document.querySelector('.select').addEventListener('change', ()=>{
-      if(document.querySelector('.select').value == 'None') {
-        document.querySelector('.grid-container').innerHTML = `
-    <center class='none'>
-      <h2>No style selected</h2>
-    </center>`;
-      }
-      update();
+    document.querySelector('#search').addEventListener('input', (e) => {
+        update();
     });
-    document.querySelector('#search').addEventListener('input', (e)=>{
-      update();
+    document.querySelector('#install').addEventListener('click', () => {
+        ibm.style.display = "block";
     });
   </script>
 </body>
