@@ -134,11 +134,26 @@
       <script>hljs.highlightAll();</script>
     </div>
   </div>
+  <div class="modal embedding">
+    <div class="modal-content">
+      <select name="Style Used" id="eSelect">
+        <option value="solid">Solids</option>
+        <option value="brands">Brands</option>
+        <option value="duotone">Duotone Solids</option>
+        <option value="light">Light Solids</option>
+        <option value="regular">Regular Solids</option>
+        <option value="thin">Thin Solids</option>
+      </select><br>
+      <button id="eConfirm">Generate Embed</button>
+      <pre><code class="language-plaintext" id="eLink"></code></pre>
+    </div>
+  </div>
   <div class="modal m2">
     <div class="modal-content">
       <span class="close"><i class='fa-solid fa-circle-x'></i></span>
       <h2 id='mname'>Empty</h2>
-      <b id='mid'>empty</b><br>
+      ID: <kbd id='mid'>empty</kbd><br>
+      Categories: <b id='mct'>a, b, c</b><br>
       <h3>Use in code</h3>
       HTML:
       <pre><code id='mhtml'>&lt;i class="fa-empty fa-empty"&gt;&lt;/i&gt;</code></pre>
@@ -151,6 +166,7 @@
   </span>
   <footer>
     <a>Website created by <a href='https://gavingogaming.com'>GavinGoGaming</a></a>
+    <button id="embed">Embed Fico into your page</button>
   </footer>
   <script>
     var arry;
@@ -191,6 +207,7 @@
     var mreact = document.querySelector('#mreact');
     var mvue = document.querySelector('#mvue');
     var mhtml = document.querySelector('#mhtml');
+    var mct = document.querySelector('#mct');
 
     window.onclick = function(event) {
         if (modals.forEach(e => event.target == e)) {
@@ -226,10 +243,16 @@
 
     function setIconDetails(item) {
         mname.innerHTML = 'Icon: ' + item.label + `<i style='margin-left: 10px;' class="fa-${folder()} fa-${item.id} fa-2x"></i>`;
-        mid.textContent = 'ID: ' + item.id;
+        mid.textContent = item.id;
         mhtml.textContent = `<i class="fa-${folder()} fa-${item.id}"></i>`;
         mreact.textContent = `<FontAwesomeIcon icon="fa-${folder()} fa-${item.id}" />`;
         mvue.textContent = `<font-awesome-icon icon="fa-${folder()} fa-${item.id}" />`;
+        var cts = folder();
+        for(var ctgry of item.categories) {
+          cts += ', ';
+          cts += ctgry;
+        }
+        mct.textContent = `${cts}`;
         hljs.highlightAll();
     }
 
@@ -248,6 +271,14 @@
     document.querySelector('#install').addEventListener('click', () => {
         ibm.style.display = "block";
     });
+    document.querySelector('#eConfirm').addEventListener('click', (e) => {
+      var code = `https://fico.fly.dev/embeds/${document.querySelector('#eSelect').value}`;
+      document.querySelector('#eLink').textContent = code;
+      hljs.highlightAll();
+    });
+    document.querySelector('#embed').addEventListener('click', (e) => {
+      document.querySelector('.embedding').style.display = 'block';
+    })
   </script>
 </body>
 </html>

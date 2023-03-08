@@ -1,0 +1,2 @@
+echo "Serving!"
+npm start
