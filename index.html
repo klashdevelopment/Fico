@@ -146,6 +146,7 @@
       </select><br>
       <button id="eConfirm">Generate Embed</button>
       <pre><code class="language-plaintext" id="eLink"></code></pre>
+      <a href="https://codepen.io/GavinGoGaming/full/eYLGqWx" style="color: rgb(73, 97, 255);">See the example: <i class="fa-brands fa-codepen"></i> codepen.io/GavinGoGaming/eYLGqWx</a>
     </div>
   </div>
   <div class="modal m2">
@@ -168,12 +169,22 @@
     <a>Website created by <a href='https://gavingogaming.com'>GavinGoGaming</a></a>
     <button id="embed">Embed Fico into your page</button>
   </footer>
-  <script>
-    var arry;
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script async>
+    let arry = [/*{
+          id: 'fico-fake-icon',
+          label: 'Fico / OFALib',
+          categories: ['Fake Icon - Not in FontAwesome!'],
+          styles: ['brands', 'duotone', 'light', 'regular', 'solid', 'thin']
+        }*/];
     async function initArry() {
         await fetch('https://keho.nl/mb/codepenfiles/fontawesome/v6/v6_icons.json')
             .then(res => res.json())
-            .then(array => arry = array);
+            .then(array => {
+              for(var i__ of array.data.allIcons.icons) {
+                arry.push(i__);
+              }
+            });
     }
     initArry();
     var translations = {
@@ -183,6 +194,14 @@
         'Regular Solids': 'regular',
         'Solid': 'solid',
         'Thin Solids': 'thin'
+    };
+    var revtranslations = {
+        'brands': 'Brands',
+        'duotone': 'Duotone Solids',
+        'light': 'Light Solids',
+        'regular': 'Regular Solids',
+        'solid': 'Solid',
+        'thin': 'Thin Solids'
     };
 
     function folder() {
@@ -219,7 +238,7 @@
 
     function update() {
         document.querySelector('.grid-container').innerHTML = '';
-        for (var itm of arry.data.allIcons.icons) {
+        for (var itm of arry) {
             console.log(itm);
             if (itm.styles.includes(folder())) {
                 if (document.getElementById('search').value === '' ||
@@ -278,7 +297,17 @@
     });
     document.querySelector('#embed').addEventListener('click', (e) => {
       document.querySelector('.embedding').style.display = 'block';
-    })
+    });
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });
+    function updateUsingParams() {
+      if(params.style != '' && params.style != undefined && params.style != null) {
+        $('.select').val(revtranslations[params.style]).change();
+        update();
+      }
+    }
+    updateUsingParams();
   </script>
 </body>
 </html>
